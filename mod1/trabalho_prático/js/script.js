@@ -12,6 +12,7 @@ function changevalue() {
   bluev.value = blue.value;
 
   square.style.backgroundColor = "rgb(" + red.value + "," + green.value + "," + blue.value + ")"
+  // square.style.backgroundColor = "rgb(93, 137, 90)"
 }
 
 
