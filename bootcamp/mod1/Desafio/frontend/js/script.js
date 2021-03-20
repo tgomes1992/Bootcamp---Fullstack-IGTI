@@ -8,16 +8,46 @@ let sub = document.querySelector("#sub");
 
 // inclusão do event listener no botao de busca
 
+
+// function desbloqbuscar() {
+//     sub.toggleAttribute("disabled");
+// }
+
+// function validar_busca() {
+//     if (buscar.value.length >= 1) {
+//         desbloqbuscar()
+
+//     }
+// }
+
+
+// buscar.addEventListener("change", () => {
+//     desbloqbuscar()
+
+
+// })
+
+
+
+function resetar() {
+    if (filter.length > 0) {
+        filter = []
+        resultados.innerHTML = "";
+        estatisticas.innerHTML = "<h2> Nada a Ser Exibido!</h2>";
+    }
+}
+
+
 sub.addEventListener("click", (event) => {
+    resetar();
     event.preventDefault();
     let buscaruser = getuser(buscar.value);
-
-
-
 });
 
 
-// 1° fomra de usar async e await 
+
+
+// 1° forma de usar async e await 
 function getusers() {
     fetch("http://localhost:3001/users")
         .then(res => res.json())
@@ -54,12 +84,11 @@ async function getuser(string) {
     filter = [...retorno]
 
     console.log(filter);
+    calculos(filter);
 
     return allusers
 };
 
-
-getuser()
 
 
 
@@ -73,11 +102,8 @@ function criar_user(user) {
     imagem = document.createElement("img");
     imagem.src = user.picture;
     imagem.classList.add("responsive-img", "circle");
-
     usuario.append(imagem);
-
     resultados.append(usuario);
-
 }
 
 // função para criar estatísticas na página ( percorrendo o dom)
@@ -102,29 +128,31 @@ function criar_estatisticas() {
 }
 
 
-
-function update_estatistics() {
-
-}
-
-
-
 function calculos(filter) {
     const sumages = filter.reduce((accumulator, current) => {
         return accumulator + current.age
     }, 0);
     const male = filter.filter(person => {
         return person.gender == "male"
-    })
+    }).length;
     const female = filter.filter(person => {
         return person.gender == "female"
-    })
+    }).length;
     const totalfilter = filter.length;
-    const avg = (sumages / totalfilter).toFixed(2)
-    return {
-        "sumages": sumages,
-        "male": male.length,
-        "female": female.length,
-        "avgages": avg
+    const avg = (sumages / totalfilter).toFixed(2).replace(".", ",");
+
+    if (filter === 0) {
+        estatisticas.textContent = "Nada a Ser Exibido!";
     }
+
+
+    estatisticas.innerHTML = `
+    <h2> Estatísticas </h2>
+    <li>Sexo Masculino:  ${male}</li>
+    <li>Sexo Feminino:  ${female}</li>
+    <li>Soma das Idades: ${sumages}  </li>
+    <li>Média das Idades:  ${avg}</li>
+         
+    `
+
 }
